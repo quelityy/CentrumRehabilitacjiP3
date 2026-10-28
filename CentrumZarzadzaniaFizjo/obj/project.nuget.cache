@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "NNXXCpoN8Dc=",
+  "success": true,
+  "projectFilePath": "E:\\PROGRAMOWANIE\\projektp3\\CentrumZarzadzaniaFizjo\\CentrumZarzadzaniaFizjo\\CentrumZarzadzaniaFizjo.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\qUEli\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.14\\microsoft.aspnetcore.app.internal.assets.10.0.14.nupkg.sha512"
+  ],
+  "logs": []
+}
