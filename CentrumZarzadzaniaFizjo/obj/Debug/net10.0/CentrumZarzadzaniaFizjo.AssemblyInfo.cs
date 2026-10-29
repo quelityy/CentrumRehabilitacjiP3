@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CentrumZarzadzaniaFizjo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+927c29082eda761231c79c2ef10ffa479f0dcb55")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3ab582206cbc21d24c1e1c174efc037cbd44602")]
 [assembly: System.Reflection.AssemblyProductAttribute("CentrumZarzadzaniaFizjo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CentrumZarzadzaniaFizjo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

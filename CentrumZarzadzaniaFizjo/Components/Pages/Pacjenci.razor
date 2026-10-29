@@ -1,0 +1,92 @@
+﻿@page "/pacjenci"
+@using CentrumZarzadzaniaFizjo.Models
+@using CentrumZarzadzaniaFizjo.Services
+@inject FizjoService FizjoService
+
+<h3>Baza Pacjentów - Reha-Junior</h3>
+
+<p>Tutaj zarządzamy pacjentami naszego centrum rehabilitacji.</p>
+
+@* pasek wyszukiwania pacjentow *@
+<div class="mb-3">
+    <input class="form-control" placeholder="Szukaj pacjenta po imieniu lub nazwisku..."
+           @bind="szukanaFraza" @bind:event="oninput" />
+</div>
+
+<div class="card mb-4 p-3 bg-light">
+    <h5>Dodaj nowego pacjenta</h5>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <input class="form-control" placeholder="Imię" @bind="nowyPacjent.Imie" />
+        </div>
+        <div class="col-md-3">
+            <input class="form-control" placeholder="Nazwisko" @bind="nowyPacjent.Nazwisko" />
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" placeholder="Telefon" @bind="nowyPacjent.Telefon" />
+        </div>
+        <div class="col-md-3">
+            <input class="form-control" placeholder="E-mail" @bind="nowyPacjent.Email" />
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100" @click="DodajPacjenta">Dodaj</button>
+        </div>
+    </div>
+</div>
+
+@if (listaPacjentow == null)
+{
+    <p><em>Ładowanie danych...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Telefon</th>
+                <th>E-mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pacjent in listaPacjentow)
+            {
+                <tr>
+                    <td>@pacjent.Id</td>
+                    <td>@pacjent.Imie</td>
+                    <td>@pacjent.Nazwisko</td>
+                    <td>@pacjent.Telefon</td>
+                    <td>@pacjent.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Pacjent> listaPacjentow = new();
+    private Pacjent nowyPacjent = new();
+    private string szukanaFraza = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        PobierzDane();
+    }
+
+    private void PobierzDane()
+    {
+        listaPacjentow = FizjoService.PobierzPacjentow();
+    }
+
+    private void DodajPacjenta()
+    {
+        if (!string.IsNullOrWhiteSpace(nowyPacjent.Imie) && !string.IsNullOrWhiteSpace(nowyPacjent.Nazwisko))
+        {
+            FizjoService.DodajPacjenta(nowyPacjent);
+            nowyPacjent = new Pacjent(); 
+            PobierzDane();
+        }
+    }
+}

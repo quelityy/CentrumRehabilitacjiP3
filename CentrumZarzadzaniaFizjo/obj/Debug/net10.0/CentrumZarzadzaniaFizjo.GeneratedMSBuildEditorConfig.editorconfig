@@ -39,6 +39,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/PROGRAMOWANIE/projektp3/CentrumZarzadzaniaFizjo/CentrumZarzadzaniaFizjo/Components/Pages/Pacjenci.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQYWNqZW5jaS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/PROGRAMOWANIE/projektp3/CentrumZarzadzaniaFizjo/CentrumZarzadzaniaFizjo/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

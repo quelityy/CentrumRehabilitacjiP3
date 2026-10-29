@@ -1,10 +1,13 @@
 using CentrumZarzadzaniaFizjo.Components;
+using CentrumZarzadzaniaFizjo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<FizjoService>();
 
 var app = builder.Build();
 

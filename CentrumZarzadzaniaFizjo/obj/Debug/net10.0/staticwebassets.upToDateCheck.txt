@@ -1,0 +1,6 @@
+Components\Layout\ReconnectModal.razor.js
+C:\Users\qUEli\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.14\build\..\_framework\blazor.web.js
+C:\Users\qUEli\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.14\build\..\_framework\blazor.server.js
+E:\PROGRAMOWANIE\projektp3\CentrumZarzadzaniaFizjo\CentrumZarzadzaniaFizjo\Components\Layout\ReconnectModal.razor.js
+C:\Users\qUEli\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.14\_framework\blazor.web.js
+C:\Users\qUEli\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.14\_framework\blazor.server.js
