@@ -8,11 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Components\Layout\app.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <None Include="wwwroot\app.css" />
   </ItemGroup>
 
 </Project>
