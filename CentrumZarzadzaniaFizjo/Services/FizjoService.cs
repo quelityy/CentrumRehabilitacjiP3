@@ -6,7 +6,10 @@ namespace CentrumZarzadzaniaFizjo.Services
     public class FizjoService
     {
         private readonly string plikPacjentow = "pacjenci.json";
+        private readonly string plikFizjo = "fizjoterapeuci.json";
+
         private List<Pacjent> pacjenci = new();
+        private List<Fizjoterapeuta> fizjoterapeuci = new();
 
         public FizjoService()
         {
@@ -15,54 +18,139 @@ namespace CentrumZarzadzaniaFizjo.Services
 
         private void WczytajZPliku()
         {
+            // wczytujemy pacjentow z pliku jesli istnieje
             if (File.Exists(plikPacjentow))
             {
-                var json = File.ReadAllText(plikPacjentow);
+                string json = File.ReadAllText(plikPacjentow);
                 pacjenci = JsonSerializer.Deserialize<List<Pacjent>>(json) ?? new();
             }
-            if (pacjenci == null || pacjenci.Count == 0)
-            {
-                pacjenci = new()
-        {
-            new Pacjent
-            {
-                Id = 1,
-                Imie = "Konrad",
-                Nazwisko = "Plonka",
-                Telefon = "515151551",
-                Email = "eeeee@wp.pl"
-            }
-        };
 
-                ZapiszDoPliku();
+            // jak nikogo nie ma to dodajemy przykladowego
+            if (pacjenci.Count == 0)
+            {
+                Pacjent p = new Pacjent();
+                p.Id = 1;
+                p.Imie = "Jan";
+                p.Nazwisko = "Kowalski";
+                p.Telefon = "500100200";
+                p.Email = "jan.kowalski@example.com";
+                pacjenci.Add(p);
+                ZapiszPacjentow();
+            }
+
+            // to samo dla fizjoterapeutow
+            if (File.Exists(plikFizjo))
+            {
+                string json = File.ReadAllText(plikFizjo);
+                fizjoterapeuci = JsonSerializer.Deserialize<List<Fizjoterapeuta>>(json) ?? new();
+            }
+
+            if (fizjoterapeuci.Count == 0)
+            {
+                Fizjoterapeuta f = new Fizjoterapeuta();
+                f.Id = 1;
+                f.Imie = "Anna";
+                f.Nazwisko = "Nowak";
+                f.Specjalizacja = "Rehabilitacja ortopedyczna";
+                f.Telefon = "600300400";
+                fizjoterapeuci.Add(f);
+                ZapiszFizjo();
             }
         }
 
-        private void ZapiszDoPliku()
+        private void ZapiszPacjentow()
         {
-            var opcje = new JsonSerializerOptions {WriteIndented = true};
-            var json = JsonSerializer.Serialize(pacjenci, opcje);
+            var opcje = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(pacjenci, opcje);
             File.WriteAllText(plikPacjentow, json);
         }
-        public List<Pacjent> PobierzPacjentow() => pacjenci;
+
+        private void ZapiszFizjo()
+        {
+            var opcje = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(fizjoterapeuci, opcje);
+            File.WriteAllText(plikFizjo, json);
+        }
+
+        public List<Pacjent> PobierzPacjentow()
+        {
+            return pacjenci;
+        }
+
         public void DodajPacjenta(Pacjent nowyPacjent)
         {
-            nowyPacjent.Id = pacjenci.Count > 0
-            ? pacjenci.Max(p => p.Id) + 1
-                : 1;
+            // nowe id to najwieksze id + 1
+            if (pacjenci.Count > 0)
+            {
+                nowyPacjent.Id = pacjenci.Max(p => p.Id) + 1;
+            }
+            else
+            {
+                nowyPacjent.Id = 1;
+            }
+
             pacjenci.Add(nowyPacjent);
-            ZapiszDoPliku();
+            ZapiszPacjentow();
+        }
+
+        public void UsunPacjenta(int id)
+        {
+            foreach (Pacjent p in pacjenci)
+            {
+                if (p.Id == id)
+                {
+                    pacjenci.Remove(p);
+                    ZapiszPacjentow();
+                    return; // konczymy bo juz usunelismy
+                }
+            }
         }
 
         public List<Pacjent> WyszukajPacjentow(string szukanaFraza)
         {
+            // pusta fraza = wszyscy pacjenci
             if (string.IsNullOrWhiteSpace(szukanaFraza))
             {
                 return pacjenci;
             }
+
             return pacjenci
-                .Where(p => p.Imie.Contains(szukanaFraza, StringComparison.OrdinalIgnoreCase) || p.Nazwisko.Contains(szukanaFraza, StringComparison.OrdinalIgnoreCase))
+                .Where(p => p.Imie.Contains(szukanaFraza, StringComparison.OrdinalIgnoreCase)
+                         || p.Nazwisko.Contains(szukanaFraza, StringComparison.OrdinalIgnoreCase))
                 .ToList();
+        }
+
+        public List<Fizjoterapeuta> PobierzFizjoterapeutow()
+        {
+            return fizjoterapeuci;
+        }
+
+        public void DodajFizjoterapeute(Fizjoterapeuta nowy)
+        {
+            if (fizjoterapeuci.Count > 0)
+            {
+                nowy.Id = fizjoterapeuci.Max(f => f.Id) + 1;
+            }
+            else
+            {
+                nowy.Id = 1;
+            }
+
+            fizjoterapeuci.Add(nowy);
+            ZapiszFizjo();
+        }
+
+        public void UsunFizjoterapeute(int id)
+        {
+            foreach (Fizjoterapeuta f in fizjoterapeuci)
+            {
+                if (f.Id == id)
+                {
+                    fizjoterapeuci.Remove(f);
+                    ZapiszFizjo();
+                    return;
+                }
+            }
         }
     }
 }
