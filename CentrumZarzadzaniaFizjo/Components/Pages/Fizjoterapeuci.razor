@@ -1,0 +1,69 @@
+﻿@page "/fizjoterapeuci"
+@rendermode InteractiveServer
+@using CentrumZarzadzaniaFizjo.Models
+@using CentrumZarzadzaniaFizjo.Services
+@inject FizjoService FizjoService
+
+<h3>Fizjoterapeuci</h3>
+
+@if (komunikat != "")
+{
+    <div class="alert alert-danger">@komunikat</div>
+}
+
+<div>
+    <input placeholder="Imię" @bind="nowyFizjo.Imie" />
+    <input placeholder="Nazwisko" @bind="nowyFizjo.Nazwisko" />
+    <input placeholder="Specjalizacja" @bind="nowyFizjo.Specjalizacja" />
+    <input placeholder="Telefon" @bind="nowyFizjo.Telefon" />
+    <button @onclick="DodajFizjo">Dodaj</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Specjalizacja</th>
+            <th>Telefon</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var fizjo in FizjoService.PobierzFizjoterapeutow())
+        {
+            <tr>
+                <td>@fizjo.Id</td>
+                <td>@fizjo.Imie</td>
+                <td>@fizjo.Nazwisko</td>
+                <td>@fizjo.Specjalizacja</td>
+                <td>@fizjo.Telefon</td>
+                <td><button @onclick="() => UsunFizjo(fizjo.Id)">Usuń</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Fizjoterapeuta nowyFizjo = new Fizjoterapeuta();
+    private string komunikat = "";
+
+    private void DodajFizjo()
+    {
+        if (string.IsNullOrWhiteSpace(nowyFizjo.Imie) || string.IsNullOrWhiteSpace(nowyFizjo.Nazwisko))
+        {
+            komunikat = "Imię i nazwisko są wymagane!";
+            return;
+        }
+
+        FizjoService.DodajFizjoterapeute(nowyFizjo);
+        nowyFizjo = new Fizjoterapeuta();
+        komunikat = "";
+    }
+
+    private void UsunFizjo(int id)
+    {
+        FizjoService.UsunFizjoterapeute(id);
+    }
+}
