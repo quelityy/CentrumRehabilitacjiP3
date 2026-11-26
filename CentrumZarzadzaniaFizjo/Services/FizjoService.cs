@@ -11,7 +11,6 @@ namespace CentrumZarzadzaniaFizjo.Services
         private List<Pacjent> pacjenci = new();
         private List<Fizjoterapeuta> fizjoterapeuci = new();
         private List<Wizyta> wizyty = new();
-
         public FizjoService()
         {
             WczytajZPliku();
@@ -24,75 +23,63 @@ namespace CentrumZarzadzaniaFizjo.Services
                 string json = File.ReadAllText(plikPacjentow);
                 pacjenci = JsonSerializer.Deserialize<List<Pacjent>>(json) ?? new();
             }
-
             // jak nikogo nie ma to dodajemy przykladowego
             if (pacjenci.Count == 0)
             {
                 Pacjent p = new Pacjent();
                 p.Id = 1;
-                p.Imie = "Jan";
-                p.Nazwisko = "Kowalski";
-                p.Telefon = "500100200";
-                p.Email = "jan.kowalski@example.com";
+                p.Imie = "test";
+                p.Nazwisko = "test";
+                p.Telefon = "1111111111";
+                p.Email = "test@.com";
                 pacjenci.Add(p);
                 ZapiszPacjentow();
             }
-
-            // to samo dla fizjoterapeutow
             if (File.Exists(plikFizjo))
             {
                 string json = File.ReadAllText(plikFizjo);
                 fizjoterapeuci = JsonSerializer.Deserialize<List<Fizjoterapeuta>>(json) ?? new();
             }
-
             if (fizjoterapeuci.Count == 0)
             {
                 Fizjoterapeuta f = new Fizjoterapeuta();
                 f.Id = 1;
-                f.Imie = "Anna";
-                f.Nazwisko = "Nowak";
-                f.Specjalizacja = "Rehabilitacja ortopedyczna";
-                f.Telefon = "600300400";
+                f.Imie = "test";
+                f.Nazwisko = "test";
+                f.Specjalizacja = "test";
+                f.Telefon = "213132132";
                 fizjoterapeuci.Add(f);
                 ZapiszFizjo();
             }
-
-            // wizyty - tu nie dodajemy przykladowych, moze byc pusta lista
+            // wizyty tu nie dodajemy przykladowych moze byc pusta lista
             if (File.Exists(plikWizyt))
             {
                 string json = File.ReadAllText(plikWizyt);
                 wizyty = JsonSerializer.Deserialize<List<Wizyta>>(json) ?? new();
             }
         }
-
         private void ZapiszPacjentow()
         {
             var opcje = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(pacjenci, opcje);
             File.WriteAllText(plikPacjentow, json);
         }
-
         private void ZapiszFizjo()
         {
             var opcje = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(fizjoterapeuci, opcje);
             File.WriteAllText(plikFizjo, json);
         }
-
         private void ZapiszWizyty()
         {
             var opcje = new JsonSerializerOptions { WriteIndented = true };
             string json = JsonSerializer.Serialize(wizyty, opcje);
             File.WriteAllText(plikWizyt, json);
         }
-
-        // ----- pacjenci -----
-
         public List<Pacjent> PobierzPacjentow()
         {
             return pacjenci;
         }
-
         public void DodajPacjenta(Pacjent nowyPacjent)
         {
             // nowe id to najwieksze id + 1
@@ -104,11 +91,9 @@ namespace CentrumZarzadzaniaFizjo.Services
             {
                 nowyPacjent.Id = 1;
             }
-
             pacjenci.Add(nowyPacjent);
             ZapiszPacjentow();
         }
-
         public void UsunPacjenta(int id)
         {
             foreach (Pacjent p in pacjenci)
@@ -117,18 +102,15 @@ namespace CentrumZarzadzaniaFizjo.Services
                 {
                     pacjenci.Remove(p);
                     ZapiszPacjentow();
-
                     // usuwamy tez wizyty tego pacjenta
                     wizyty.RemoveAll(w => w.PacjentId == id);
                     ZapiszWizyty();
-                    return; // konczymy bo juz usunelismy
+                    return;
                 }
             }
         }
-
         public List<Pacjent> WyszukajPacjentow(string szukanaFraza)
         {
-            // pusta fraza = wszyscy pacjenci
             if (string.IsNullOrWhiteSpace(szukanaFraza))
             {
                 return pacjenci;
@@ -139,14 +121,10 @@ namespace CentrumZarzadzaniaFizjo.Services
                          || p.Nazwisko.Contains(szukanaFraza, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
-
-        // ----- fizjoterapeuci -----
-
         public List<Fizjoterapeuta> PobierzFizjoterapeutow()
         {
             return fizjoterapeuci;
         }
-
         public void DodajFizjoterapeute(Fizjoterapeuta nowy)
         {
             if (fizjoterapeuci.Count > 0)
@@ -157,11 +135,9 @@ namespace CentrumZarzadzaniaFizjo.Services
             {
                 nowy.Id = 1;
             }
-
             fizjoterapeuci.Add(nowy);
             ZapiszFizjo();
         }
-
         public void UsunFizjoterapeute(int id)
         {
             foreach (Fizjoterapeuta f in fizjoterapeuci)
@@ -178,9 +154,6 @@ namespace CentrumZarzadzaniaFizjo.Services
                 }
             }
         }
-
-        // ----- wizyty -----
-
         public List<Wizyta> PobierzWizyty()
         {
             // sortujemy po dacie, najblizsze na gorze
@@ -199,7 +172,6 @@ namespace CentrumZarzadzaniaFizjo.Services
             }
             return false;
         }
-
         public void DodajWizyte(Wizyta nowaWizyta)
         {
             if (wizyty.Count > 0)
@@ -227,7 +199,6 @@ namespace CentrumZarzadzaniaFizjo.Services
                 }
             }
         }
-
         // zeby w tabeli pokazac imie zamiast samego id
         public string PobierzNazwePacjenta(int id)
         {
@@ -240,7 +211,6 @@ namespace CentrumZarzadzaniaFizjo.Services
             }
             return "brak danych";
         }
-
         public string PobierzNazweFizjo(int id)
         {
             foreach (Fizjoterapeuta f in fizjoterapeuci)
