@@ -1,0 +1,9 @@
+[
+  {
+    "Id": 1,
+    "Imie": "test",
+    "Nazwisko": "test",
+    "Specjalizacja": "test",
+    "Telefon": "213132132"
+  }
+]

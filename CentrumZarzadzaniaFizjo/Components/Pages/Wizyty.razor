@@ -1,5 +1,113 @@
-﻿<h3>Wizyty</h3>
+﻿@page "/wizyty"
+@rendermode InteractiveServer
+@using CentrumZarzadzaniaFizjo.Models
+@using CentrumZarzadzaniaFizjo.Services
+@inject FizjoService FizjoService
+
+<h3>Wizyty</h3>
+
+@if (komunikat != "")
+{
+    <div class="alert alert-danger">@komunikat</div>
+}
+
+<div>
+    <select @bind="nowaWizyta.PacjentId">
+        <option value="0">-- wybierz pacjenta --</option>
+        @foreach (var p in FizjoService.PobierzPacjentow())
+        {
+            <option value="@p.Id">@p.Imie @p.Nazwisko</option>
+        }
+    </select>
+
+    <select @bind="nowaWizyta.FizjoterapeutaId">
+        <option value="0">-- wybierz fizjoterapeutę --</option>
+        @foreach (var f in FizjoService.PobierzFizjoterapeutow())
+        {
+            <option value="@f.Id">@f.Imie @f.Nazwisko</option>
+        }
+    </select>
+
+    <input type="datetime-local" @bind="nowaWizyta.DataWizyty" />
+    <input placeholder="Opis zabiegu" @bind="nowaWizyta.OpisZabiegu" />
+    <button @onclick="DodajWizyte">Umów wizytę</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Pacjent</th>
+            <th>Fizjoterapeuta</th>
+            <th>Opis zabiegu</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wizyta in FizjoService.PobierzWizyty())
+        {
+            <tr>
+                <td>@wizyta.Id</td>
+                <td>@wizyta.DataWizyty.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@FizjoService.PobierzNazwePacjenta(wizyta.PacjentId)</td>
+                <td>@FizjoService.PobierzNazweFizjo(wizyta.FizjoterapeutaId)</td>
+                <td>@wizyta.OpisZabiegu</td>
+                <td><button @onclick="() => UsunWizyte(wizyta.Id)">Usuń</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
+    private Wizyta nowaWizyta = new Wizyta();
+    private string komunikat = "";
 
+    protected override void OnInitialized()
+    {
+        // na start ustawiamy date na jutro na 10:00
+        nowaWizyta.DataWizyty = DateTime.Today.AddDays(1).AddHours(10);
+    }
+
+    private void DodajWizyte()
+    {
+        // trzeba wybrac pacjenta i fizjoterapeute
+        if (nowaWizyta.PacjentId == 0 || nowaWizyta.FizjoterapeutaId == 0)
+        {
+            komunikat = "Wybierz pacjenta i fizjoterapeutę!";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(nowaWizyta.OpisZabiegu))
+        {
+            komunikat = "Wpisz opis zabiegu!";
+            return;
+        }
+
+        // nie mozna umowic wizyty w przeszlosci
+        if (nowaWizyta.DataWizyty < DateTime.Now)
+        {
+            komunikat = "Nie można umówić wizyty w przeszłości!";
+            return;
+        }
+
+        // sprawdzamy czy fizjoterapeuta jest wolny
+        if (FizjoService.CzyTerminZajety(nowaWizyta.FizjoterapeutaId, nowaWizyta.DataWizyty))
+        {
+            komunikat = "Ten fizjoterapeuta ma już wizytę o tej godzinie!";
+            return;
+        }
+
+        FizjoService.DodajWizyte(nowaWizyta);
+
+        // czyscimy formularz
+        nowaWizyta = new Wizyta();
+        nowaWizyta.DataWizyty = DateTime.Today.AddDays(1).AddHours(10);
+        komunikat = "";
+    }
+
+    private void UsunWizyte(int id)
+    {
+        FizjoService.UsunWizyte(id);
+    }
 }
